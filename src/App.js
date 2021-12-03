@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useCallback } from 'react';
 import twitterLogo from './assets/twitter-logo.svg';
 import './App.css';
 import { Connection, PublicKey, clusterApiUrl} from '@solana/web3.js';
@@ -10,7 +10,7 @@ import idl from './idl.json';
 import kp from './keypair.json'
 
 // SystemProgram is a reference to the Solana runtime!
-const { SystemProgram, Keypair } = web3;
+const { SystemProgram } = web3;
 
 // Create a keypair for the account that will hold the GIF data.
 const arr = Object.values(kp._keypair.secretKey)
@@ -193,7 +193,7 @@ const renderConnectedContainer = () => {
     }
   }
 
-  const getGifList = async() => {
+  const getGifList = useCallback(async() => {
   try {
     const provider = getProvider();
     const program = new Program(idl, programID, provider);
@@ -206,7 +206,7 @@ const renderConnectedContainer = () => {
     console.log("Error in getGifList: ", error)
     setGifList(null);
   }
-}
+},[])
 
 
   useEffect(() => {
@@ -229,7 +229,7 @@ const renderConnectedContainer = () => {
       // Set state
       setGifList(TEST_GIFS);
     }
-  }, [walletAddress]);
+  }, [walletAddress, getGifList]);
 
   return (
     <div className="App">
